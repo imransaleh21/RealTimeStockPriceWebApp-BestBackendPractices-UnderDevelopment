@@ -1,6 +1,11 @@
+using StockPrice.ServiceContracts;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
+builder.Services.AddScoped<IFinnhubService, IFinnhubService>();
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
-
+app.UseStaticFiles();
+app.UseRouting();
+app.MapControllers();
 app.Run();
