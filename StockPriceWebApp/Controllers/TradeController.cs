@@ -1,22 +1,35 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using StockPrice.ServiceContracts;
+using StockPriceWebApp.Models;
 
 namespace StockPriceWebApp.Controllers
 {
+    [Route("[Controller]")]
     public class TradeController : Controller
     {
         private readonly IFinnhubService _finnhubService;
+        private readonly TradingOptions _options;
 
-        public TradeController
-            (
-            IFinnhubService finnhubService
+        public TradeController(
+            IFinnhubService finnhubService,
+            IOptions<TradingOptions> options
             )
         {
             _finnhubService = finnhubService;
+            _options = options.Value;
         }
-        public IActionResult Index()
+
+        [Route("[Action]")]
+        public async Task<IActionResult> Index()
         {
-            return View();
+            Dictionary<string, object>? companyProfile = await _finnhubService.GetCompanyProfile(_options.DefaultStockSymbol);
+            StockTrade stockTrade = new()
+            {
+                StockSymbol = companyProfile["ticker"].ToString(),
+                StockName = companyProfile["name"].ToString(),
+            };
+            return Json(stockTrade);
         }
     }
 }
