@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "http": {
+    "StockPrice": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

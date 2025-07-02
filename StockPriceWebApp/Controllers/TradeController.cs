@@ -21,13 +21,16 @@ namespace StockPriceWebApp.Controllers
         }
 
         [Route("[Action]")]
+        [Route("~/[Controller]")]
         public async Task<IActionResult> Index()
         {
             Dictionary<string, object>? companyProfile = await _finnhubService.GetCompanyProfile(_options.DefaultStockSymbol);
+            Dictionary<string, object>? stockPrices = await _finnhubService.GetStockPriceQuote(_options.DefaultStockSymbol);
             StockTrade stockTrade = new()
             {
                 StockSymbol = companyProfile["ticker"].ToString(),
                 StockName = companyProfile["name"].ToString(),
+                Price = Convert.ToDouble(stockPrices["c"].ToString())
             };
             return Json(stockTrade);
         }

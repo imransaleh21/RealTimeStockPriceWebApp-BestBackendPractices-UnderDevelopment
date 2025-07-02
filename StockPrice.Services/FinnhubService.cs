@@ -33,22 +33,47 @@ namespace StockPrice.Services
                 Stream stream = httpResponseMessage.Content.ReadAsStream();
                 StreamReader streamReader = new StreamReader( stream );
                 string responseBody = await streamReader.ReadToEndAsync();
-                Dictionary<string, object>? weatherResponse = JsonSerializer.Deserialize<Dictionary<string, object>>(responseBody);
+                Dictionary<string, object>? companyProfileResponse = JsonSerializer.Deserialize<Dictionary<string, object>>(responseBody);
                 
-                if (weatherResponse == null) 
+                if (companyProfileResponse == null) 
                 {
                     throw new InvalidOperationException("No response from finnhub");
                 }
-                if (weatherResponse.ContainsKey("error"))
+                if (companyProfileResponse.ContainsKey("error"))
                 {
-                    throw new InvalidOperationException(Convert.ToString(weatherResponse["error"]));
+                    throw new InvalidOperationException(Convert.ToString(companyProfileResponse["error"]));
                 }
-                return weatherResponse;
+                return companyProfileResponse;
             }
         }
-        public Task<Dictionary<string, object>?> GetStockPriceQuote(string stockSymbol)
+        public async Task<Dictionary<string, object>?> GetStockPriceQuote(string stockSymbol)
         {
-            throw new NotImplementedException();
+            using (HttpClient httpClient = _httpClientFactory.CreateClient())
+            {
+                HttpRequestMessage httpRequestMessage = new()
+                {
+                    RequestUri = new Uri($" https://finnhub.io/api/v1/quote?symbol={stockSymbol}&token={_configuration["FinnHubToken"]}"),
+                    Method = HttpMethod.Get
+                };
+
+                HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+                Stream stream = httpResponseMessage.Content.ReadAsStream();
+                StreamReader streamReader = new StreamReader( stream );
+                string responseBody = await streamReader.ReadToEndAsync();
+                Dictionary<string, object>? stockPriceResponse = JsonSerializer.Deserialize<Dictionary<string, object>>(responseBody);
+
+                if (stockPriceResponse == null)
+                {
+                    throw new InvalidOperationException("No response from finnhub");
+                }
+                if (stockPriceResponse.ContainsKey("error"))
+                {
+                    throw new InvalidOperationException(Convert.ToString(stockPriceResponse["error"]));
+                }
+                return stockPriceResponse;
+
+            }
+            ;
         }
     }
 }
