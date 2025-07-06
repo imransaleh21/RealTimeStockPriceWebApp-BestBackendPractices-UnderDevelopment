@@ -1,6 +1,6 @@
 using Microsoft.Extensions.DependencyInjection;
-using StockPrice.ServiceContracts;
-using StockPrice.Services;
+using ServiceContracts;
+using Services;
 using StockPriceWebApp;
 
 var builder = WebApplication.CreateBuilder(args);

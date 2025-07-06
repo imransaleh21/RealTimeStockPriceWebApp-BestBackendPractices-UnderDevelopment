@@ -1,10 +1,10 @@
 ﻿using Microsoft.Extensions.Configuration;
-using StockPrice.ServiceContracts;
+using ServiceContracts;
 using System.Net.Http;
 using System.Reflection.PortableExecutable;
 using System.Text.Json;
 
-namespace StockPrice.Services
+namespace Services
 {
     public class FinnhubService : IFinnhubService
     {
